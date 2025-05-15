@@ -1,0 +1,93 @@
+module o-ran-sync-state-change-noti-test {
+  yang-version 1.1;
+  namespace "urn:o-ran:sync-noti-test:1.0";
+  prefix "o-ran-sync-state-change-noti-test";
+
+  organization "O-RAN Alliance";
+
+  contact
+    "www.o-ran.org";
+
+  description
+    "This module defines synchronization mechanism for the O-RAN Equipment.
+
+    Copyright 2024 the O-RAN Alliance.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the above disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the above disclaimer in the documentation
+    and/or other materials provided with the distribution.
+    * Neither the Members of the O-RAN Alliance nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.";
+
+  revision "2025-05-15" {
+    description
+      "version 1.0.0
+
+      1) This YANG is only for testing the sync state notification and does not depend on any other YANGs.";
+    reference "ORAN-WG4.M.0-v15.00";
+  }
+
+  typedef sync-state-type {
+    type enumeration {
+      enum LOCKED {
+        description "Equipment is in the locked mode, as defined in ITU-T G.810.";
+      }
+      enum HOLDOVER {
+        description "Equipment clock is in holdover mode.";
+      }
+      enum FREERUN {
+        description "Equipment clock isn't locked to an input reference, and is not in the holdover mode.";
+      }
+    }
+    description "Enumeration of synchronization states.";
+  }
+
+  grouping sync-group {
+    description "This group represents the state and status of timing and synchronization of the O-RU.";
+    container sync-status {
+      config false;
+      description
+        "Object of this class provides synchronization state of the module.";
+
+      leaf sync-state {
+        type sync-state-type;
+        mandatory true;
+        description "State of DU synchronization.";
+      }
+    }
+  }
+
+  container sync-noti-test {
+    description "Main container for synchronization-related parameters.";
+    uses sync-group;
+  }
+
+  notification synchronization-state-change {
+    description
+      "Notification used to inform about synchronization state change.";
+
+    leaf sync-state {
+      type sync-state-type;
+      description
+        "State of equipment synchronization is notified at state change.";
+    }
+  }
+}
